@@ -19,7 +19,6 @@ body {
     text-align: center;
 }
 
-/* INTRO */
 #intro {
     position: fixed;
     width: 100%;
@@ -52,7 +51,6 @@ h2 {
     font-size: 32px;
 }
 
-/* GRID */
 .products {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -60,48 +58,35 @@ h2 {
     justify-items: center;
 }
 
-/* CARD */
 .card {
     width: 240px;
     background: #222;
     border-radius: 15px;
     overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: 0.3s;
 }
 
 .card:hover {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 15px 30px rgba(0, 255, 204, 0.3);
+    transform: scale(1.03);
 }
 
 .card img {
     width: 100%;
     height: 220px;
     object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.card:hover img {
-    transform: scale(1.08);
 }
 
 .card-content {
     padding: 15px;
 }
 
-.card h3 {
-    margin-bottom: 10px;
-}
-
 .price {
     color: #00ffcc;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    font-size: 18px;
 }
 
-/* BUTTON */
+/* BUTTON FIX */
 .buy-btn {
     display: inline-block;
     background: #00ffcc;
@@ -110,82 +95,79 @@ h2 {
     padding: 12px 18px;
     border-radius: 8px;
     font-weight: bold;
-    transition: 0.3s ease;
-}
-
-.buy-btn:hover {
-    background: white;
-    transform: scale(1.05);
-}
-
-@media (max-width: 600px) {
-    .card {
-        width: 90%;
-    }
-
-    h2 {
-        font-size: 24px;
-    }
-
-    #intro h1 {
-        font-size: 30px;
-    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- INTRO -->
 <div id="intro">
     <h1>AL NOOR ONLINE STORE</h1>
 </div>
 
-<!-- MAIN -->
 <div id="main">
 
 <h2>🛒 AL NOOR ONLINE STORE</h2>
 
 <div class="products">
 
-    <div class="card">
-        <img src="{{ url_for('static', filename='watch.jpg') }}">
-        <div class="card-content">
-            <h3>Smart Watch</h3>
-            <p class="price">Rs. 799</p>
-            <a class="buy-btn" href="https://wa.me/923001234567?text=I%20want%20to%20buy%20Smart%20Watch">Buy Now</a>
-        </div>
+<!-- PRODUCT 1 -->
+<div class="card">
+    <img src="{{ url_for('static', filename='watch.jpg') }}">
+    <div class="card-content">
+        <h3>Smart Watch</h3>
+        <p class="price">Rs. 799</p>
+        <a class="buy-btn"
+           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20Smart%20Watch"
+           target="_blank">
+           Buy Now
+        </a>
     </div>
-
-    <div class="card">
-        <img src="{{ url_for('static', filename='hand_free.png') }}">
-        <div class="card-content">
-            <h3>Hand Free</h3>
-            <p class="price">Rs. 499</p>
-            <a class="buy-btn" href="https://wa.me/923001234567?text=I%20want%20to%20buy%20Handfree">Buy Now</a>
-        </div>
-    </div>
-
-    <div class="card">
-        <img src="{{ url_for('static', filename='usb.jpg') }}">
-        <div class="card-content">
-            <h3>USB Cable</h3>
-            <p class="price">Rs. 499</p>
-            <a class="buy-btn" href="https://wa.me/923001234567?text=I%20want%20to%20buy%20USB%20Cable">Buy Now</a>
-        </div>
-    </div>
-
-    <div class="card">
-        <img src="{{ url_for('static', filename='fast_charger.jpg') }}">
-        <div class="card-content">
-            <h3>Fast Charger</h3>
-            <p class="price">Rs. 699</p>
-            <a class="buy-btn" href="https://wa.me/923001234567?text=I%20want%20to%20buy%20Fast%20Charger">Buy Now</a>
-        </div>
-    </div>
-
 </div>
 
+<!-- PRODUCT 2 -->
+<div class="card">
+    <img src="{{ url_for('static', filename='hand_free.png') }}">
+    <div class="card-content">
+        <h3>Hand Free</h3>
+        <p class="price">Rs. 499</p>
+        <a class="buy-btn"
+           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20Handfree"
+           target="_blank">
+           Buy Now
+        </a>
+    </div>
+</div>
+
+<!-- PRODUCT 3 -->
+<div class="card">
+    <img src="{{ url_for('static', filename='usb.jpg') }}">
+    <div class="card-content">
+        <h3>USB Cable</h3>
+        <p class="price">Rs. 499</p>
+        <a class="buy-btn"
+           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20USB%20Cable"
+           target="_blank">
+           Buy Now
+        </a>
+    </div>
+</div>
+
+<!-- PRODUCT 4 -->
+<div class="card">
+    <img src="{{ url_for('static', filename='fast_charger.jpg') }}">
+    <div class="card-content">
+        <h3>Fast Charger</h3>
+        <p class="price">Rs. 699</p>
+        <a class="buy-btn"
+           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20Fast%20Charger"
+           target="_blank">
+           Buy Now
+        </a>
+    </div>
+</div>
+
+</div>
 </div>
 
 <script>
