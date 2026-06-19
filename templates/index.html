@@ -52,12 +52,13 @@ h2 {
     font-size: 32px;
 }
 
-/* PRODUCTS GRID */
+/* ✅ GRID FIX (IMPORTANT) */
 .products {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 25px;
+    justify-items: center;
+    align-items: start;
 }
 
 /* CARD */
@@ -67,27 +68,25 @@ h2 {
     border-radius: 15px;
     overflow: hidden;
     cursor: pointer;
-
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* ONLY ONE CARD HOVER EFFECT */
+/* CARD HOVER */
 .card:hover {
     transform: translateY(-10px) scale(1.03);
     box-shadow: 0 15px 30px rgba(0, 255, 204, 0.3);
 }
 
-/* IMAGE */
+/* IMAGE FIX */
 .card img {
     width: 100%;
     height: 220px;
     object-fit: cover;
     display: block;
-
     transition: transform 0.5s ease;
 }
 
-/* ONLY HOVERED CARD IMAGE ZOOM */
+/* ONLY HOVER ZOOM */
 .card:hover img {
     transform: scale(1.08);
 }
@@ -152,50 +151,50 @@ h2 {
 <!-- MAIN -->
 <div id="main">
 
-    <h2>🛒 AL NOOR ONLINE STORE</h2>
+<h2>🛒 AL NOOR ONLINE STORE</h2>
 
-    <div class="products">
+<div class="products">
 
-        <div class="card">
-            <img src="{{ url_for('static', filename='watch.jpg') }}">
-            <div class="card-content">
-                <h3>Smart Watch</h3>
-                <p class="price">Rs. 799</p>
-                <a class="buy-btn" href="#">Buy Now</a>
-            </div>
+    <div class="card">
+        <img src="{{ url_for('static', filename='watch.jpg') }}">
+        <div class="card-content">
+            <h3>Smart Watch</h3>
+            <p class="price">Rs. 799</p>
+            <a class="buy-btn" href="#">Buy Now</a>
         </div>
-
-        <div class="card">
-            <img src="{{ url_for('static', filename='hand_free.png') }}">
-            <div class="card-content">
-                <h3>Hand Free</h3>
-                <p class="price">Rs. 499</p>
-                <a class="buy-btn" href="#">Buy Now</a>
-            </div>
-        </div>
-
-        <div class="card">
-            <img src="{{ url_for('static', filename='mobile_glass.jpg') }}">
-            <div class="card-content">
-                <h3>Mobile Glass</h3>
-                <p class="price">Rs. 299</p>
-                <a class="buy-btn" href="#">Buy Now</a>
-            </div>
-        </div>
-
-        <div class="card">
-            <img src="{{ url_for('static', filename='fast_charger.jpg') }}">
-            <div class="card-content">
-                <h3>Fast Charger</h3>
-                <p class="price">Rs. 699</p>
-                <a class="buy-btn" href="#">Buy Now</a>
-            </div>
-        </div>
-
     </div>
+
+    <div class="card">
+        <img src="{{ url_for('static', filename='hand_free.png') }}">
+        <div class="card-content">
+            <h3>Hand Free</h3>
+            <p class="price">Rs. 499</p>
+            <a class="buy-btn" href="#">Buy Now</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="{{ url_for('static', filename='usb.jpg') }}">
+        <div class="card-content">
+            <h3>USB Cable</h3>
+            <p class="price">Rs. 499</p>
+            <a class="buy-btn" href="#">Buy Now</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="{{ url_for('static', filename='fast_charger.jpg') }}">
+        <div class="card-content">
+            <h3>Fast Charger</h3>
+            <p class="price">Rs. 699</p>
+            <a class="buy-btn" href="#">Buy Now</a>
+        </div>
+    </div>
+
 </div>
 
-<!-- SCRIPT -->
+</div>
+
 <script>
 setTimeout(() => {
     document.getElementById("intro").style.display = "none";
