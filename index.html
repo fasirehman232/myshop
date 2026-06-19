@@ -2,120 +2,201 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AL NOOR ONLINE STORE</title>
 
     <style>
-    .card h3,
-.card p{
-    color:white !important;
-}
-        /* Intro screen */
-        #intro{
-            position:fixed;
-            width:100%;
-            height:100vh;
-            background:black;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            flex-direction:column;
-            z-index:9999;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
-        #intro h1{
-            font-size:40px;
-            color:#00ffcc;
-            animation:zoom 2s ease-in-out;
+        body {
+            background: linear-gradient(to bottom, #111, #1a1a1a);
+            color: white;
+            text-align: center;
         }
 
-        @keyframes zoom{
-            from{transform:scale(0); opacity:0;}
-            to{transform:scale(1); opacity:1;}
+        /* Intro Screen */
+        #intro {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
         }
 
-        /* main content */
-        #main{
-            display:none;
-            padding:20px;
+        #intro h1 {
+            color: #00ffcc;
+            font-size: 42px;
+            animation: zoom 2s ease-in-out;
         }
 
-        .card{
-            background:#222;
-            padding:15px;
-            margin:10px;
-            border-radius:10px;
-            display:inline-block;
-            width:200px;
+        @keyframes zoom {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
-        .card img{
-            width:100%;
-            border-radius:10px;
+        #main {
+            display: none;
+            padding: 30px 20px;
         }
 
-        button{
-            background:#00ffcc;
-            border:none;
-            padding:8px;
-            margin-top:10px;
-            cursor:pointer;
+        h2 {
+            margin-bottom: 30px;
+            color: #fff;
+            font-size: 32px;
+        }
+
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .card {
+            width: 240px;
+            background: #222;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 255, 204, 0.3);
+        }
+
+        .card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.08);
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .card h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            color: #00ffcc;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .buy-btn {
+            display: inline-block;
+            background: #00ffcc;
+            color: black;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                width: 90%;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            #intro h1 {
+                font-size: 30px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<!-- INTRO SCREEN -->
-<div id="intro">
-    <h1>AL NOOR ONLINE STORE</h1>
-</div>
-
-<!-- MAIN PRODUCTS -->
-<div id="main">
-
-   <h2>🛒 AL NOOR ONLINE STORE</h2>
-
-    <div class="card">
-        <img src="{{ url_for('static', filename='images/watch.jpg') }}">
-        <h3>Smart Watch</h3>
-        <p>Rs. 799</p>
-        <a href="https://wa.me/923445163090?text=I%20want%20to%20buy%20Smart%20Watch" target="_blank">
-            <button>Buy Now</button>
-        </a>
+    <div id="intro">
+        <h1>AL NOOR ONLINE STORE</h1>
     </div>
 
-    <div class="card">
-        <img src="{{ url_for('static', filename='images/hand_free.png') }}">
-        <h3>Hand Free</h3>
-        <p>Rs. 499</p>
-        <a href="https://wa.me/923445163090?text=I%20want%20to%20buy%20Hand%20Free" target="_blank">
-            <button>Buy Now</button>
-        </a>
-    </div>
-  <div class="card">
-        <img src="{{ url_for('static', filename='images/mobile_glass.jpg') }}">
-        <h3>Mobile Glass</h3>
-        <p>Rs. 299</p>
-        <a href="https://wa.me/923445163090?text=I%20want%20to%20buy%20Mobile%20Glass" target="_blank">
-            <button>Buy Now</button>
-        </a>
-    </div>
-     <div class="card">
-        <img src="{{ url_for('static', filename='images/fast_charger.jpg') }}">
-        <h3>Fast Charger</h3>
-        <p>Rs. 699</p>
-        <a href="https://wa.me/923445163090?text=I%20want%20to%20buy%20Fast%20Charger" target="_blank">
-            <button>Buy Now</button>
-        </a>
-    </div>
-</div>
+    <div id="main">
 
-<script>
-    setTimeout(()=>{
-        document.getElementById("intro").style.display="none";
-        document.getElementById("main").style.display="block";
-    }, 3000);
-</script>
+        <h2>🛒 AL NOOR ONLINE STORE</h2>
+
+        <div class="products">
+
+            <div class="card">
+                <img src="{{ url_for('static', filename='watch.jpg') }}" alt="Smart Watch">
+                <div class="card-content">
+                    <h3>Smart Watch</h3>
+                    <p class="price">Rs. 799</p>
+                    <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Smart%20Watch%20order%20karni%20hai.">Buy Now</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="{{ url_for('static', filename='hand_free.png') }}" alt="Hand Free">
+                <div class="card-content">
+                    <h3>Hand Free</h3>
+                    <p class="price">Rs. 499</p>
+                    <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Hand%20Free%20order%20karni%20hai.">Buy Now</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="{{ url_for('static', filename='mobile_glass.jpg') }}" alt="Mobile Glass">
+                <div class="card-content">
+                    <h3>Mobile Glass</h3>
+                    <p class="price">Rs. 299</p>
+                    <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Mobile%20Glass%20order%20karni%20hai.">Buy Now</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <img src="{{ url_for('static', filename='fast_charger.jpg') }}" alt="Fast Charger">
+                <div class="card-content">
+                    <h3>Fast Charger</h3>
+                    <p class="price">Rs. 699</p>
+                    <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Fast%20Charger%20order%20karna%20hai.">Buy Now</a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById("intro").style.display = "none";
+            document.getElementById("main").style.display = "block";
+        }, 3000);
+    </script>
 
 </body>
 </html>
