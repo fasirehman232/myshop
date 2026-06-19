@@ -6,10 +6,15 @@
     <title>AL NOOR ONLINE STORE</title>
 
     <style>
-        body {
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: Arial, sans-serif;
-            background: #111;
+        }
+
+        body {
+            background: linear-gradient(to bottom, #111, #1a1a1a);
             color: white;
             text-align: center;
         }
@@ -19,7 +24,7 @@
             position: fixed;
             width: 100%;
             height: 100vh;
-            background: black;
+            background: #000;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -28,7 +33,7 @@
 
         #intro h1 {
             color: #00ffcc;
-            font-size: 40px;
+            font-size: 42px;
             animation: zoom 2s ease-in-out;
         }
 
@@ -45,32 +50,61 @@
 
         #main {
             display: none;
-            padding: 20px;
+            padding: 30px 20px;
         }
 
-        h2, h3, p {
-            color: white;
+        h2 {
+            margin-bottom: 30px;
+            color: #fff;
+            font-size: 32px;
         }
 
         .products {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 20px;
+            gap: 25px;
         }
 
         .card {
+            width: 240px;
             background: #222;
-            width: 220px;
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 255, 204, 0.3);
         }
 
         .card img {
             width: 100%;
-            height: 180px;
+            height: 220px;
             object-fit: cover;
-            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover img {
+    transform: scale(1.05);
+    transition: transform 0.6s ease-in-out;
+}
+        .card-content {
+            padding: 15px;
+        }
+
+        .card h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            color: #00ffcc;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
 
         .buy-btn {
@@ -78,26 +112,39 @@
             background: #00ffcc;
             color: black;
             text-decoration: none;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border-radius: 8px;
-            margin-top: 10px;
             font-weight: bold;
+            transition: all 0.3s ease;
         }
 
         .buy-btn:hover {
-            opacity: 0.9;
+            background: white;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                width: 90%;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            #intro h1 {
+                font-size: 30px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Intro -->
     <div id="intro">
         <h1>AL NOOR ONLINE STORE</h1>
     </div>
 
-    <!-- Main Content -->
     <div id="main">
 
         <h2>🛒 AL NOOR ONLINE STORE</h2>
@@ -106,38 +153,38 @@
 
             <div class="card">
                 <img src="{{ url_for('static', filename='watch.jpg') }}" alt="Smart Watch">
-                <h3>Smart Watch</h3>
-                <p>Rs. 799</p>
-                <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Smart%20Watch%20order%20karni%20hai.">
-                    Buy Now
-                </a>
+                <div class="card-content">
+                    <h3>Smart Watch</h3>
+                    <p class="price">Rs. 799</p>
+                    <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Smart%20Watch%20order%20karni%20hai.">Buy Now</a>
+                </div>
             </div>
 
             <div class="card">
                 <img src="{{ url_for('static', filename='hand_free.png') }}" alt="Hand Free">
-                <h3>Hand Free</h3>
-                <p>Rs. 499</p>
-                <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Hand%20Free%20order%20karni%20hai.">
-                    Buy Now
-                </a>
+                <div class="card-content">
+                    <h3>Hand Free</h3>
+                    <p class="price">Rs. 499</p>
+                    <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Hand%20Free%20order%20karni%20hai.">Buy Now</a>
+                </div>
             </div>
 
             <div class="card">
                 <img src="{{ url_for('static', filename='mobile_glass.jpg') }}" alt="Mobile Glass">
-                <h3>Mobile Glass</h3>
-                <p>Rs. 299</p>
-                <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Mobile%20Glass%20order%20karni%20hai.">
-                    Buy Now
-                </a>
+                <div class="card-content">
+                    <h3>Mobile Glass</h3>
+                    <p class="price">Rs. 299</p>
+                    <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Mobile%20Glass%20order%20karni%20hai.">Buy Now</a>
+                </div>
             </div>
 
             <div class="card">
                 <img src="{{ url_for('static', filename='fast_charger.jpg') }}" alt="Fast Charger">
-                <h3>Fast Charger</h3>
-                <p>Rs. 699</p>
-                <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Fast%20Charger%20order%20karna%20hai.">
-                    Buy Now
-                </a>
+                <div class="card-content">
+                    <h3>Fast Charger</h3>
+                    <p class="price">Rs. 699</p>
+                    <a class="buy-btn" href="https://wa.me/923001234567?text=Assalamualaikum,%20mujhe%20Fast%20Charger%20order%20karna%20hai.">Buy Now</a>
+                </div>
             </div>
 
         </div>
@@ -145,7 +192,7 @@
     </div>
 
     <script>
-        setTimeout(function () {
+        setTimeout(() => {
             document.getElementById("intro").style.display = "none";
             document.getElementById("main").style.display = "block";
         }, 3000);
