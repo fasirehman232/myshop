@@ -1,181 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AL NOOR ONLINE STORE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AL NOOR ONLINE STORE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            min-height: 100vh;
+        }
 
-body {
-    background: linear-gradient(to bottom, #111, #1a1a1a);
-    color: white;
-    text-align: center;
-}
+        /* Intro Screen */
+        #intro {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
 
-#intro {
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
+        #intro h1 {
+            color: #00ffcc;
+            font-size: 48px;
+            animation: zoom 2s ease-in-out;
+        }
 
-#intro h1 {
-    color: #00ffcc;
-    font-size: 42px;
-    animation: zoom 2s ease-in-out;
-}
+        @keyframes zoom {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
 
-@keyframes zoom {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.3);
+        }
 
-#main {
-    display: none;
-    padding: 30px 20px;
-}
+        .header h2 {
+            color: #00ffcc;
+            font-size: 26px;
+        }
 
-h2 {
-    margin-bottom: 30px;
-    font-size: 32px;
-}
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
 
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 25px;
-    justify-items: center;
-}
+        .nav-link {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
 
-.card {
-    width: 240px;
-    background: #222;
-    border-radius: 15px;
-    overflow: hidden;
-    transition: 0.3s;
-}
+        .nav-link.admin {
+            background: rgba(0, 255, 204, 0.2);
+            color: #00ffcc;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+        }
 
-.card:hover {
-    transform: scale(1.03);
-}
+        .nav-link.admin:hover {
+            background: rgba(0, 255, 204, 0.3);
+        }
 
-.card img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-}
+        .nav-link.logout {
+            background: rgba(255, 77, 77, 0.2);
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 77, 77, 0.3);
+        }
 
-.card-content {
-    padding: 15px;
-}
+        .nav-link.logout:hover {
+            background: rgba(255, 77, 77, 0.3);
+        }
 
-.price {
-    color: #00ffcc;
-    margin-bottom: 10px;
-    font-size: 18px;
-}
+        /* Main Content */
+        #main {
+            display: none;
+            padding: 40px 30px;
+        }
 
-/* BUTTON FIX */
-.buy-btn {
-    display: inline-block;
-    background: #00ffcc;
-    color: black;
-    text-decoration: none;
-    padding: 12px 18px;
-    border-radius: 8px;
-    font-weight: bold;
-}
-</style>
+        .page-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 40px;
+            color: #00ffcc;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            justify-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 300px;
+            background: rgba(34, 34, 34, 0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 255, 204, 0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .card-content h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card-content .price {
+            color: #00ffcc;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .buy-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #00ffcc, #00b894);
+            color: black;
+            text-decoration: none;
+            padding: 14px 30px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 204, 0.3);
+        }
+
+        .no-products {
+            text-align: center;
+            color: #888;
+            font-size: 18px;
+            padding: 60px;
+            grid-column: 1/-1;
+        }
+    </style>
 </head>
-
 <body>
-
-<div id="intro">
-    <h1>AL NOOR ONLINE STORE</h1>
-</div>
-
-<div id="main">
-
-<h2>🛒 AL NOOR ONLINE STORE</h2>
-
-<div class="products">
-
-<!-- PRODUCT 1 -->
-<div class="card">
-    <img src="{{ url_for('static', filename='watch.jpg') }}">
-    <div class="card-content">
-        <h3>Smart Watch</h3>
-        <p class="price">Rs. 799</p>
-        <a class="buy-btn"
-           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20Smart%20Watch"
-           target="_blank">
-           Buy Now
-        </a>
+    <!-- Intro Screen -->
+    <div id="intro">
+        <h1>AL NOOR ONLINE STORE</h1>
     </div>
-</div>
 
-<!-- PRODUCT 2 -->
-<div class="card">
-    <img src="{{ url_for('static', filename='hand_free.png') }}">
-    <div class="card-content">
-        <h3>Hand Free</h3>
-        <p class="price">Rs. 499</p>
-        <a class="buy-btn"
-           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20Handfree"
-           target="_blank">
-           Buy Now
-        </a>
+    <!-- Main Store -->
+    <div id="main">
+        <!-- Header -->
+        <div class="header">
+            <h2>🛒 AL NOOR ONLINE STORE</h2>
+            <div class="nav-links">
+                <a href="{{ url_for('admin') }}" class="nav-link admin">Admin Panel</a>
+                <a href="{{ url_for('logout') }}" class="nav-link logout">Logout</a>
+            </div>
+        </div>
+
+        <h2 class="page-title">Our Products</h2>
+
+        <div class="products">
+            {% if products %}
+                {% for p in products %}
+                <div class="card">
+                    <img src="{{ url_for('static', filename=p[3]) }}" alt="{{ p[1] }}">
+                    <div class="card-content">
+                        <h3>{{ p[1] }}</h3>
+                        <p class="price">Rs. {{ p[2] }}</p>
+                        <a class="buy-btn"
+                           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20{{ p[1] | urlencode }}"
+                           target="_blank">
+                           Buy Now
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-products">No products available yet. Check back soon!</p>
+            {% endif %}
+        </div>
     </div>
-</div>
 
-<!-- PRODUCT 3 -->
-<div class="card">
-    <img src="{{ url_for('static', filename='usb.jpg') }}">
-    <div class="card-content">
-        <h3>USB Cable</h3>
-        <p class="price">Rs. 499</p>
-        <a class="buy-btn"
-           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20USB%20Cable"
-           target="_blank">
-           Buy Now
-        </a>
-    </div>
-</div>
-
-<!-- PRODUCT 4 -->
-<div class="card">
-    <img src="{{ url_for('static', filename='fast_charger.jpg') }}">
-    <div class="card-content">
-        <h3>Fast Charger</h3>
-        <p class="price">Rs. 699</p>
-        <a class="buy-btn"
-           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20Fast%20Charger"
-           target="_blank">
-           Buy Now
-        </a>
-    </div>
-</div>
-
-</div>
-</div>
-
-<script>
-setTimeout(() => {
-    document.getElementById("intro").style.display = "none";
-    document.getElementById("main").style.display = "block";
-}, 3000);
-</script>
-
+    <script>
+        setTimeout(() => {
+            document.getElementById("intro").style.display = "none";
+            document.getElementById("main").style.display = "block";
+        }, 3000);
+    </script>
 </body>
 </html>
