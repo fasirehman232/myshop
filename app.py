@@ -1,41 +1,24 @@
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.utils import secure_filename
 import os
-import sys
 
-# Get correct path for templates and static files
-def get_resource_path(relative_path):
-    if getattr(sys, 'frozen', False):
-        base_path = sys._MEIPASS
-    else:
-        base_path = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "alnoor_secret_key_2026_advance")
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "admin123"
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'images')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-    return os.path.join(base_path, relative_path)
-
-
-# Get correct path for database
-def get_db_path():
-    if getattr(sys, 'frozen', False):
-        base_path = os.path.dirname(sys.executable)
-    else:
-        base_path = os.path.dirname(os.path.abspath(__file__))
-
-    return os.path.join(base_path, "users.db")
-
-
-app = Flask(
-    __name__,
-    template_folder=get_resource_path("templates"),
-    static_folder=get_resource_path("static")
-)
-
-app.secret_key = "alnoor_secret_key_2026_advance"
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 # ---------------- DATABASE INIT ----------------
 
 def init_db():
-    conn = sqlite3.connect(get_db_path())
+    conn = sqlite3.connect("users.db")
     cur = conn.cursor()
 
     cur.execute("""
@@ -54,6 +37,11 @@ def init_db():
             image TEXT
         )
     """)
+
+    # Add admin user if not exists
+    cur.execute("SELECT * FROM users WHERE username = ?", (ADMIN_USERNAME,))
+    if not cur.fetchone():
+        cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (ADMIN_USERNAME, ADMIN_PASSWORD))
 
     cur.execute("SELECT COUNT(*) FROM products")
 
@@ -93,7 +81,7 @@ def signup():
         username = request.form["username"]
         password = request.form["password"]
 
-        conn = sqlite3.connect(get_db_path())
+        conn = sqlite3.connect("users.db")
         cur = conn.cursor()
 
         try:
@@ -125,7 +113,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        conn = sqlite3.connect(get_db_path())
+        conn = sqlite3.connect("users.db")
         cur = conn.cursor()
 
         cur.execute(
@@ -155,7 +143,7 @@ def store():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    conn = sqlite3.connect(get_db_path())
+    conn = sqlite3.connect("users.db")
     cur = conn.cursor()
 
     cur.execute("SELECT * FROM products")
@@ -172,8 +160,10 @@ def store():
 def admin():
     if "user" not in session:
         return redirect(url_for("login"))
+    if session["user"] != ADMIN_USERNAME:
+        return redirect(url_for("store"))  # Non-admins go back to store
 
-    conn = sqlite3.connect(get_db_path())
+    conn = sqlite3.connect("users.db")
     cur = conn.cursor()
 
     cur.execute("SELECT * FROM products")
@@ -188,20 +178,34 @@ def admin():
 
 @app.route("/add", methods=["POST"])
 def add():
+    if "user" not in session or session["user"] != ADMIN_USERNAME:
+        return redirect(url_for("login"))
+        
     name = request.form["name"]
     price = request.form["price"]
-    image = request.form["image"]
+    
+    # Check if file is uploaded
+    if 'image' not in request.files:
+        return "No file part", 400
+    file = request.files['image']
+    if file.filename == '':
+        return "No selected file", 400
+    
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        image_path = f"images/{filename}"
+    
+        conn = sqlite3.connect("users.db")
+        cur = conn.cursor()
 
-    conn = sqlite3.connect(get_db_path())
-    cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO products (name, price, image) VALUES (?, ?, ?)",
+            (name, price, image_path)
+        )
 
-    cur.execute(
-        "INSERT INTO products (name, price, image) VALUES (?, ?, ?)",
-        (name, price, image)
-    )
-
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
 
     return redirect(url_for("admin"))
 
@@ -210,7 +214,10 @@ def add():
 
 @app.route("/delete/<int:id>")
 def delete(id):
-    conn = sqlite3.connect(get_db_path())
+    if "user" not in session or session["user"] != ADMIN_USERNAME:
+        return redirect(url_for("login"))
+        
+    conn = sqlite3.connect("users.db")
     cur = conn.cursor()
 
     cur.execute("DELETE FROM products WHERE id=?", (id,))
