@@ -1,104 +1,286 @@
-import os
-import sqlite3
-from flask import Flask, render_template, request, redirect, url_for, session
 
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "alnoor_secret_key_2026")
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AL NOOR ONLINE STORE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-# ---------------- DATABASE ----------------
+        body {
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+        }
 
-def init_db():
-    conn = sqlite3.connect("users.db")
-    cur = conn.cursor()
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            price TEXT,
-            image TEXT
-        )
-    """)
+        /* Intro Screen */
+        #intro {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
 
-    conn.commit()
-    conn.close()
+        #intro h1 {
+            font-size: 52px;
+            color: #00ffcc;
+            animation: zoom 2s ease-in-out;
+            text-shadow: 0 0 30px rgba(0, 255, 204, 0.6);
+            letter-spacing: 3px;
+        }
 
-init_db()
+        @keyframes zoom {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
 
-# ---------------- HOME ----------------
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(20px);
+            padding: 25px 40px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideInDown 0.8s ease-out;
+        }
 
-@app.route("/")
-def index():
-    conn = sqlite3.connect("users.db")
-    cur = conn.cursor()
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    cur.execute("SELECT * FROM products")
-    products = cur.fetchall()
+        .header h1 {
+            color: #00ffcc;
+            font-size: 28px;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            letter-spacing: 2px;
+        }
 
-    conn.close()
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
 
-    return render_template("index.html", products=products)
+        .nav-link {
+            padding: 12px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
 
-# ---------------- LOGIN (simple) ----------------
+        .nav-link.admin {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.2), rgba(0, 255, 204, 0.1));
+            color: #00ffcc;
+            border: 1px solid rgba(0, 255, 204, 0.35);
+        }
 
-@app.route("/login")
-def login():
-    session["user"] = "admin"
-    return redirect(url_for("index"))
+        .nav-link.admin:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.3), rgba(0, 255, 204, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 255, 204, 0.25);
+        }
 
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("index"))
+        .nav-link.logout {
+            background: linear-gradient(135deg, rgba(255, 77, 77, 0.2), rgba(255, 0, 0, 0.1));
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 77, 77, 0.35);
+        }
 
-# ---------------- ADMIN CHECK ----------------
+        .nav-link.logout:hover {
+            background: linear-gradient(135deg, rgba(255, 77, 77, 0.3), rgba(255, 0, 0, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 77, 77, 0.25);
+        }
 
-def is_admin():
-    return session.get("user") == "admin"
+        /* Main Content */
+        #main {
+            display: none;
+            padding: 50px 30px;
+        }
 
-# ---------------- ADD PRODUCT ----------------
+        .page-title {
+            text-align: center;
+            font-size: 38px;
+            margin-bottom: 50px;
+            color: #00ffcc;
+            text-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+            letter-spacing: 1px;
+        }
 
-@app.route("/add", methods=["POST"])
-def add():
-    if not is_admin():
-        return "Unauthorized", 403
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            justify-items: center;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
 
-    name = request.form["name"]
-    price = request.form["price"]
+        .card {
+            width: 100%;
+            max-width: 320px;
+            background: rgba(34, 34, 34, 0.75);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-    # IMPORTANT: only store static relative path
-    image = request.form["image"]  # e.g. images/watch.jpg
+        .card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 30px 70px rgba(0, 255, 204, 0.25);
+            border-color: rgba(0, 255, 204, 0.4);
+        }
 
-    conn = sqlite3.connect("users.db")
-    cur = conn.cursor()
+        .card-image-container {
+            width: 100%;
+            height: 260px;
+            overflow: hidden;
+            position: relative;
+        }
 
-    cur.execute("INSERT INTO products (name, price, image) VALUES (?, ?, ?)",
-                (name, price, image))
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-    conn.commit()
-    conn.close()
+        .card:hover img {
+            transform: scale(1.2);
+        }
 
-    return redirect(url_for("index"))
+        .card-content {
+            padding: 28px;
+            text-align: center;
+        }
 
-# ---------------- DELETE PRODUCT ----------------
+        .card-content h3 {
+            color: #fff;
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
 
-@app.route("/delete/<int:id>")
-def delete(id):
-    if not is_admin():
-        return "Unauthorized", 403
+        .card-content .price {
+            color: #00ffcc;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
 
-    conn = sqlite3.connect("users.db")
-    cur = conn.cursor()
+        .buy-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #00ffcc, #00b894, #00ffcc);
+            background-size: 200% 200%;
+            color: #000;
+            text-decoration: none;
+            padding: 14px 40px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 16px;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    cur.execute("DELETE FROM products WHERE id=?", (id,))
+        .buy-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 255, 204, 0.4);
+            background-position: 100% 0;
+        }
 
-    conn.commit()
-    conn.close()
+        .no-products {
+            text-align: center;
+            color: #777;
+            font-size: 18px;
+            padding: 60px;
+            grid-column: 1/-1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Intro Screen -->
+    <div id="intro">
+        <h1>AL NOOR ONLINE STORE</h1>
+    </div>
 
-    return redirect(url_for("index"))
+    <!-- Main Store -->
+    <div id="main">
+        <!-- Header -->
+        <div class="header">
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <img src="{{ url_for('static', filename='images/watch.jpg') }}" 
+                     alt="Logo" 
+                     style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);">
+                <h1>🛒 AL NOOR STORE</h1>
+            </div>
+            <div class="nav-links">
+                {% if session.get('user') == 'admin' %}
+                    <a href="{{ url_for('admin') }}" class="nav-link admin">Admin Panel</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="nav-link logout">Logout</a>
+            </div>
+        </div>
 
-# ---------------- RUN APP (IMPORTANT FOR RAILWAY) ----------------
+        <h2 class="page-title">Our Products</h2>
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+        <div class="products">
+            {% if products %}
+                {% for p in products %}
+                <div class="card">
+                    <div class="card-image-container">
+                        <img src="{{ url_for('static', filename=p[3]) }}" alt="{{ p[1] }}">
+                    </div>
+                    <div class="card-content">
+                        <h3>{{ p[1] }}</h3>
+                        <p class="price">Rs. {{ p[2] }}</p>
+                        <a class="buy-btn"
+                           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20{{ p[1] | urlencode }}"
+                           target="_blank">
+                            Buy Now
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-products">No products available yet. Check back soon!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById("intro").style.display = "none";
+            document.getElementById("main").style.display = "block";
+        }, 3000);
+    </script>
+</body>
+</html>
