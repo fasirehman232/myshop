@@ -9,3 +9,10 @@ ENV
 *.egg-info/
 dist/
 build/
+.vs/
+check_db.py
+check_static.py
+users.db
+app.exe
+app.spec
+X
