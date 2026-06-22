@@ -13,9 +13,16 @@
         }
 
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: white;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             min-height: 100vh;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Intro Screen */
@@ -32,148 +39,198 @@
         }
 
         #intro h1 {
+            font-size: 52px;
             color: #00ffcc;
-            font-size: 48px;
             animation: zoom 2s ease-in-out;
+            text-shadow: 0 0 30px rgba(0, 255, 204, 0.6);
+            letter-spacing: 3px;
         }
 
         @keyframes zoom {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         /* Header */
         .header {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            padding: 20px 30px;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(20px);
+            padding: 25px 40px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
-            border-bottom: 1px solid rgba(0, 255, 204, 0.3);
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideInDown 0.8s ease-out;
         }
 
-        .header h2 {
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
             color: #00ffcc;
-            font-size: 26px;
+            font-size: 28px;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            letter-spacing: 2px;
         }
 
         .nav-links {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             flex-wrap: wrap;
         }
 
         .nav-link {
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px 28px;
+            border-radius: 10px;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s ease;
+            font-size: 15px;
         }
 
         .nav-link.admin {
-            background: rgba(0, 255, 204, 0.2);
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.2), rgba(0, 255, 204, 0.1));
             color: #00ffcc;
-            border: 1px solid rgba(0, 255, 204, 0.3);
+            border: 1px solid rgba(0, 255, 204, 0.35);
         }
 
         .nav-link.admin:hover {
-            background: rgba(0, 255, 204, 0.3);
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.3), rgba(0, 255, 204, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 255, 204, 0.25);
         }
 
         .nav-link.logout {
-            background: rgba(255, 77, 77, 0.2);
+            background: linear-gradient(135deg, rgba(255, 77, 77, 0.2), rgba(255, 0, 0, 0.1));
             color: #ff4d4d;
-            border: 1px solid rgba(255, 77, 77, 0.3);
+            border: 1px solid rgba(255, 77, 77, 0.35);
         }
 
         .nav-link.logout:hover {
-            background: rgba(255, 77, 77, 0.3);
+            background: linear-gradient(135deg, rgba(255, 77, 77, 0.3), rgba(255, 0, 0, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 77, 77, 0.25);
         }
 
         /* Main Content */
         #main {
             display: none;
-            padding: 40px 30px;
+            padding: 50px 30px;
         }
 
         .page-title {
             text-align: center;
-            font-size: 36px;
-            margin-bottom: 40px;
+            font-size: 38px;
+            margin-bottom: 50px;
             color: #00ffcc;
+            text-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+            letter-spacing: 1px;
         }
 
         .products {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
             justify-items: center;
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
         }
 
         .card {
             width: 100%;
-            max-width: 300px;
-            background: rgba(34, 34, 34, 0.8);
+            max-width: 320px;
+            background: rgba(34, 34, 34, 0.75);
             border-radius: 20px;
             overflow: hidden;
             border: 1px solid rgba(0, 255, 204, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 255, 204, 0.2);
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 30px 70px rgba(0, 255, 204, 0.25);
+            border-color: rgba(0, 255, 204, 0.4);
+        }
+
+        .card-image-container {
+            width: 100%;
+            height: 260px;
+            overflow: hidden;
+            position: relative;
         }
 
         .card img {
             width: 100%;
-            height: 240px;
+            height: 100%;
             object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card:hover img {
+            transform: scale(1.2);
         }
 
         .card-content {
-            padding: 25px;
+            padding: 28px;
             text-align: center;
         }
 
         .card-content h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
+            color: #fff;
+            font-size: 22px;
+            margin-bottom: 12px;
         }
 
         .card-content .price {
             color: #00ffcc;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 25px;
         }
 
         .buy-btn {
             display: inline-block;
-            background: linear-gradient(135deg, #00ffcc, #00b894);
-            color: black;
+            background: linear-gradient(135deg, #00ffcc, #00b894, #00ffcc);
+            background-size: 200% 200%;
+            color: #000;
             text-decoration: none;
-            padding: 14px 30px;
-            border-radius: 10px;
-            font-weight: 700;
+            padding: 14px 40px;
+            border-radius: 12px;
+            font-weight: 800;
             font-size: 16px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .buy-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 255, 204, 0.3);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 255, 204, 0.4);
+            background-position: 100% 0;
         }
 
         .no-products {
             text-align: center;
-            color: #888;
+            color: #777;
             font-size: 18px;
             padding: 60px;
             grid-column: 1/-1;
@@ -190,9 +247,17 @@
     <div id="main">
         <!-- Header -->
         <div class="header">
-            <h2>🛒 AL NOOR ONLINE STORE</h2>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <!-- Circular Logo - Fallback to watch.jpg if logo missing -->
+                <img src="{{ url_for('static', filename='images/watch.jpg') }}" 
+                     alt="Logo" 
+                     style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #00ffcc; box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);">
+                <h1>🛒 AL NOOR STORE</h1>
+            </div>
             <div class="nav-links">
-                <a href="{{ url_for('admin') }}" class="nav-link admin">Admin Panel</a>
+                {% if session.get('user') == 'admin' %}
+                    <a href="{{ url_for('admin') }}" class="nav-link admin">Admin Panel</a>
+                {% endif %}
                 <a href="{{ url_for('logout') }}" class="nav-link logout">Logout</a>
             </div>
         </div>
@@ -203,14 +268,16 @@
             {% if products %}
                 {% for p in products %}
                 <div class="card">
-                    <img src="{{ url_for('static', filename=p[3]) }}" alt="{{ p[1] }}">
+                    <div class="card-image-container">
+                        <img src="{{ url_for('static', filename=p[3]) }}" alt="{{ p[1] }}">
+                    </div>
                     <div class="card-content">
                         <h3>{{ p[1] }}</h3>
                         <p class="price">Rs. {{ p[2] }}</p>
                         <a class="buy-btn"
                            href="https://wa.me/923325359644?text=I%20want%20to%20buy%20{{ p[1] | urlencode }}"
                            target="_blank">
-                           Buy Now
+                            Buy Now
                         </a>
                     </div>
                 </div>
