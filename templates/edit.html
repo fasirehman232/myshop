@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product | AL NOOR STORE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(20px);
+            padding: 25px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            border: 2px solid rgba(0, 255, 204, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            animation: slideInDown 0.8s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header h1 {
+            color: #00ffcc;
+            font-size: 28px;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+        }
+
+        .back-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            border: 2px solid rgba(0, 255, 204, 0.35);
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.2), rgba(0, 255, 204, 0.1));
+            color: #00ffcc;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 255, 204, 0.3), rgba(0, 255, 204, 0.2));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 255, 204, 0.25);
+        }
+
+        .edit-form {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            border-radius: 18px;
+            border: 2px solid rgba(0, 255, 204, 0.3);
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .edit-form h2 {
+            color: #00ffcc;
+            margin-bottom: 25px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #00ffcc;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 204, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00ffcc;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        }
+
+        .form-group input::placeholder {
+            color: #888;
+        }
+
+        .current-image {
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .current-image img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-save {
+            width: 100%;
+            background: linear-gradient(135deg, #00ffcc, #00b894, #00ffcc);
+            background-size: 200% 200%;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            color: #000;
+            font-size: 20px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 204, 0.4);
+            background-position: 100% 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✏️ Edit Product</h1>
+            <a href="{{ url_for('admin') }}" class="back-btn">← Back to Admin</a>
+        </div>
+
+        <div class="edit-form">
+            <h2>Update Product Details</h2>
+            <form method="POST" action="{{ url_for('edit', id=product[0]) }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" name="name" value="{{ product[1] }}" placeholder="e.g., Smart Watch" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Price (Rs.)</label>
+                    <input type="text" name="price" value="{{ product[2] }}" placeholder="e.g., 1500" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Image URL (or leave empty to use file upload)</label>
+                    <input type="url" name="image" value="{{ product[3] if product[3] else '' }}" placeholder="https://example.com/image.jpg">
+                </div>
+
+                {% if product[3] %}
+                <div class="current-image">
+                    <label>Current Image:</label>
+                    <img src="{{ product[3] }}" alt="{{ product[1] }}">
+                </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label>Or Upload Image from PC</label>
+                    <input type="file" name="image_file" accept="image/*">
+                </div>
+
+                <button type="submit" class="btn-save">💾 Save Changes</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
