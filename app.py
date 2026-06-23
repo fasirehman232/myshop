@@ -1,11 +1,23 @@
 import sqlite3
 import os
 from flask import Flask, render_template, request, redirect, session, url_for
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "alnoor_secret_key_2026")
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+
+# Create uploads folder if it doesn't exist
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 DB_PATH = "users.db"
+
+# Allowed file extensions for images
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ---------------- DATABASE ----------------
 def init_db():
@@ -65,7 +77,20 @@ def admin():
     if request.method == "POST":
         name = request.form.get("name")
         price = request.form.get("price")
-        image = request.form.get("image", "")
+        image_url = request.form.get("image", "")
+        image_file = request.files.get("image_file")
+        
+        image = image_url
+        
+        # Handle file upload if a file was provided
+        if image_file and allowed_file(image_file.filename):
+            filename = secure_filename(image_file.filename)
+            # Make filename unique to avoid overwrites
+            from uuid import uuid4
+            unique_filename = f"{uuid4().hex}_{filename}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+            image_file.save(filepath)
+            image = f"/static/uploads/{unique_filename}"
 
         if name and price:
             cur.execute("INSERT INTO products (name, price, image) VALUES (?, ?, ?)", (name, price, image))
@@ -76,6 +101,51 @@ def admin():
     conn.close()
 
     return render_template("admin.html", products=products)
+
+# ---------------- EDIT PRODUCT ----------------
+@app.route("/edit/<int:id>", methods=["GET", "POST"])
+def edit(id):
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        name = request.form.get("name")
+        price = request.form.get("price")
+        image_url = request.form.get("image", "")
+        image_file = request.files.get("image_file")
+        
+        image = image_url
+        
+        # Handle file upload if a file was provided
+        if image_file and allowed_file(image_file.filename):
+            filename = secure_filename(image_file.filename)
+            from uuid import uuid4
+            unique_filename = f"{uuid4().hex}_{filename}"
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+            image_file.save(filepath)
+            image = f"/static/uploads/{unique_filename}"
+
+        if name and price:
+            if image:
+                cur.execute("UPDATE products SET name = ?, price = ?, image = ? WHERE id = ?", (name, price, image, id))
+            else:
+                cur.execute("UPDATE products SET name = ?, price = ? WHERE id = ?", (name, price, id))
+            conn.commit()
+        conn.close()
+        return redirect(url_for("admin"))
+
+    # Get existing product for GET request
+    cur.execute("SELECT * FROM products WHERE id = ?", (id,))
+    product = cur.fetchone()
+    conn.close()
+
+    if not product:
+        return redirect(url_for("admin"))
+
+    return render_template("edit.html", product=product)
 
 # ---------------- DELETE PRODUCT ----------------
 @app.route("/delete/<int:id>")

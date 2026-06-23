@@ -16,3 +16,5 @@ users.db
 app.exe
 app.spec
 X
+static/uploads/
+
