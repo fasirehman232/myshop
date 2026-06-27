@@ -46,6 +46,14 @@ def init_db():
             image TEXT
         )
     """)
+    
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL
+        )
+    """)
 
     conn.commit()
     conn.close()
@@ -193,6 +201,60 @@ def delete(id):
     return redirect(url_for("admin"))
 
 
+# ---------------- CLIENT SIGNUP ----------------
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    error = None
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        
+        try:
+            cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+            conn.commit()
+            conn.close()
+            session["client_user"] = username
+            return redirect(url_for("store"))
+        except sqlite3.IntegrityError:
+            error = "Username already exists!"
+            conn.close()
+    
+    return render_template("signup.html", error=error)
+
+
+# ---------------- CLIENT LOGIN ----------------
+@app.route("/client-login", methods=["GET", "POST"])
+def client_login():
+    error = None
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE username = ? AND password = ?", (username, password))
+        user = cur.fetchone()
+        conn.close()
+        
+        if user:
+            session["client_user"] = username
+            return redirect(url_for("store"))
+        else:
+            error = "Invalid username or password!"
+    
+    return render_template("client_login.html", error=error)
+
+
+# ---------------- CLIENT LOGOUT ----------------
+@app.route("/client-logout")
+def client_logout():
+    session.pop("client_user", None)
+    return redirect(url_for("store"))
+
+
 # ---------------- STORE ----------------
 @app.route("/store")
 def store():
@@ -202,7 +264,7 @@ def store():
     products = cur.fetchall()
     conn.close()
 
-    return render_template("index.html", products=products)
+    return render_template("index.html", products=products, client_user=session.get("client_user"))
 
 
 # ---------------- RUN ----------------
