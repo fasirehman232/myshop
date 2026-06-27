@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup | AL NOOR STORE</title>
+    <title>Client Login | AL NOOR STORE</title>
     <style>
         * {
             margin: 0;
@@ -206,7 +206,7 @@
         <div class="header">
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
             <h1>AL NOOR</h1>
-            <p>Create Account</p>
+            <p>Client Login</p>
         </div>
 
         {% if error %}
@@ -224,11 +224,11 @@
                 <input type="password" id="password" name="password" placeholder="Enter password" required>
             </div>
 
-            <button type="submit" class="btn">Sign Up</button>
+            <button type="submit" class="btn">Login</button>
         </form>
 
         <div class="footer">
-            <p>Already have an account? <a href="{{ url_for('client_login') }}">Login here</a></p>
+            <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up here</a></p>
             <p><a href="{{ url_for('store') }}">Back to Store</a></p>
         </div>
     </div>

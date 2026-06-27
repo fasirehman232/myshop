@@ -241,7 +241,16 @@
                 <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
                 <h1>🛒 AL NOOR STORE</h1>
             </div>
-            <a href="{{ url_for('login') }}" class="nav-link">🔐 Admin Login</a>
+            <div style="display: flex; gap: 10px;">
+                {% if client_user %}
+                    <span style="color: #00ffcc; font-weight: 600; margin: auto 0;">Hi, {{ client_user }}!</span>
+                    <a href="{{ url_for('client_logout') }}" class="nav-link">🚪 Logout</a>
+                {% else %}
+                    <a href="{{ url_for('signup') }}" class="nav-link">📝 Sign Up</a>
+                    <a href="{{ url_for('client_login') }}" class="nav-link">🔑 Login</a>
+                {% endif %}
+                <a href="{{ url_for('login') }}" class="nav-link" style="background: linear-gradient(135deg, rgba(255, 77, 77, 0.2), rgba(255, 0, 0, 0.1)); border-color: rgba(255, 77, 77, 0.35); color: #ff4d4d;">🔐 Admin</a>
+            </div>
         </div>
 
         <h2 class="page-title">Our Products</h2>
@@ -265,8 +274,18 @@
                     <div class="card-content">
                         <h3>{{ p[1] }}</h3>
                         <p class="price">Rs. {{ p[2] }}</p>
+                        {% if p[3] %}
+                            {% if p[3]|is_local %}
+                                {% set filename = p[3].replace('/static/', '') %}
+                                {% set full_image_url = request.host_url ~ 'static/' ~ filename %}
+                            {% else %}
+                                {% set full_image_url = p[3] %}
+                            {% endif %}
+                        {% else %}
+                            {% set full_image_url = '' %}
+                        {% endif %}
                         <a class="buy-btn"
-                           href="https://wa.me/923325359644?text=I%20want%20to%20buy%20{{ p[1] | urlencode }}"
+                           href="https://wa.me/923325359644?text=I%20want%20to%20buy:%0AProduct:%20{{ p[1] | urlencode }}%0APrice:%20Rs.%20{{ p[2] | urlencode }}{% if full_image_url %}%0AImage:%20{{ full_image_url | urlencode }}{% endif %}"
                            target="_blank">
                             Buy Now
                         </a>
