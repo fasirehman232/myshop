@@ -287,7 +287,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-section">
-                <img src="https://i.imgur.com/8Kq5t4Q.jpg" alt="Logo">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo">
                 <h1>🛠️ Admin Panel</h1>
             </div>
             <div class="nav-links">
@@ -329,7 +329,16 @@
             <div class="products-list">
                 {% for p in products %}
                 <div class="product-card">
-                    <img src="{{ url_for('static', filename=p[3].split('/static/', 1)[1]) if p[3] and p[3]|is_local else (p[3] if p[3] else 'https://picsum.photos/300/220?random=' + p[0]|string) }}" alt="{{ p[1] }}" onerror="this.src='https://picsum.photos/300/220'">
+                    {% if p[3] %}
+                        {% if p[3]|is_local %}
+                            {% set filename = p[3].replace('/static/', '') %}
+                            <img src="{{ url_for('static', filename=filename) }}" alt="{{ p[1] }}">
+                        {% else %}
+                            <img src="{{ p[3] }}" alt="{{ p[1] }}">
+                        {% endif %}
+                    {% else %}
+                        <img src="https://picsum.photos/300/220?random={{ p[0] }}" alt="{{ p[1] }}">
+                    {% endif %}
                     <h3>{{ p[1] }}</h3>
                     <p class="price">Rs. {{ p[2] }}</p>
                     <div style="display: flex; gap: 10px;">
