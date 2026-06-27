@@ -329,7 +329,7 @@
             <div class="products-list">
                 {% for p in products %}
                 <div class="product-card">
-                    <img src="{{ p[3] if p[3] else 'https://picsum.photos/300/220?random=' + p[0]|string }}" alt="{{ p[1] }}" onerror="this.src='https://picsum.photos/300/220'">
+                    <img src="{{ url_for('static', filename=p[3].split('/static/', 1)[1]) if p[3] and p[3]|is_local else (p[3] if p[3] else 'https://picsum.photos/300/220?random=' + p[0]|string) }}" alt="{{ p[1] }}" onerror="this.src='https://picsum.photos/300/220'">
                     <h3>{{ p[1] }}</h3>
                     <p class="price">Rs. {{ p[2] }}</p>
                     <div style="display: flex; gap: 10px;">

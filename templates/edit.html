@@ -200,7 +200,7 @@
                 {% if product[3] %}
                 <div class="current-image">
                     <label>Current Image:</label>
-                    <img src="{{ product[3] }}" alt="{{ product[1] }}">
+                    <img src="{{ url_for('static', filename=product[3].split('/static/', 1)[1]) if product[3] and product[3]|is_local else product[3] }}" alt="{{ product[1] }}">
                 </div>
                 {% endif %}
 
