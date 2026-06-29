@@ -43,7 +43,8 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             price TEXT NOT NULL,
-            image TEXT
+            image TEXT,
+            category TEXT DEFAULT 'other'
         )
     """)
     
@@ -54,6 +55,24 @@ def init_db():
             password TEXT NOT NULL
         )
     """)
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS banners (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            text TEXT,
+            background TEXT
+        )
+    """)
+    
+    cur.execute("SELECT COUNT(*) FROM banners")
+    if cur.fetchone()[0] == 0:
+        default_banners = [
+            ("🎉 Special Discount!", "Get 20% off on all Vegetables!", "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"),
+            ("🥤 Fresh Juices!", "Buy 2 Get 1 Free!", "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"),
+            ("📱 New Mobiles!", "Limited Stock Available!", "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"),
+        ]
+        cur.executemany("INSERT INTO banners (title, text, background) VALUES (?, ?, ?)", default_banners)
 
     conn.commit()
     conn.close()
@@ -107,33 +126,45 @@ def admin():
     cur = conn.cursor()
 
     if request.method == "POST":
-        name = request.form.get("name")
-        price = request.form.get("price")
-        image_url = request.form.get("image", "")
-        image_file = request.files.get("image_file")
+        # Check if it's a product or banner update
+        if request.form.get("action") == "update_banner":
+            banner_id = request.form.get("banner_id")
+            title = request.form.get("title")
+            text = request.form.get("text")
+            background = request.form.get("background")
+            cur.execute("UPDATE banners SET title=?, text=?, background=? WHERE id=?", (title, text, background, banner_id))
+        else:
+            # Product addition
+            name = request.form.get("name")
+            price = request.form.get("price")
+            category = request.form.get("category", "other")
+            image_url = request.form.get("image", "")
+            image_file = request.files.get("image_file")
 
-        image = image_url
+            image = image_url
 
-        # file upload
-        if image_file and allowed_file(image_file.filename):
-            filename = secure_filename(image_file.filename)
-            unique_filename = f"{uuid4().hex}_{filename}"
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            image_file.save(filepath)
-            image = f"/static/uploads/{unique_filename}"
+            # file upload
+            if image_file and allowed_file(image_file.filename):
+                filename = secure_filename(image_file.filename)
+                unique_filename = f"{uuid4().hex}_{filename}"
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+                image_file.save(filepath)
+                image = f"/static/uploads/{unique_filename}"
 
-        if name and price:
-            cur.execute(
-                "INSERT INTO products (name, price, image) VALUES (?, ?, ?)",
-                (name, price, image)
-            )
-            conn.commit()
+            if name and price:
+                cur.execute(
+                    "INSERT INTO products (name, price, image, category) VALUES (?, ?, ?, ?)",
+                    (name, price, image, category)
+                )
+        conn.commit()
 
     cur.execute("SELECT * FROM products")
     products = cur.fetchall()
+    cur.execute("SELECT * FROM banners")
+    banners = cur.fetchall()
     conn.close()
 
-    return render_template("admin.html", products=products)
+    return render_template("admin.html", products=products, banners=banners)
 
 
 # ---------------- EDIT ----------------
@@ -148,6 +179,7 @@ def edit(id):
     if request.method == "POST":
         name = request.form.get("name")
         price = request.form.get("price")
+        category = request.form.get("category", "other")
         image_url = request.form.get("image", "")
         image_file = request.files.get("image_file")
 
@@ -163,13 +195,13 @@ def edit(id):
         if name and price:
             if image:
                 cur.execute(
-                    "UPDATE products SET name=?, price=?, image=? WHERE id=?",
-                    (name, price, image, id)
+                    "UPDATE products SET name=?, price=?, image=?, category=? WHERE id=?",
+                    (name, price, image, category, id)
                 )
             else:
                 cur.execute(
-                    "UPDATE products SET name=?, price=? WHERE id=?",
-                    (name, price, id)
+                    "UPDATE products SET name=?, price=?, category=? WHERE id=?",
+                    (name, price, category, id)
                 )
 
             conn.commit()
@@ -258,13 +290,41 @@ def client_logout():
 # ---------------- STORE ----------------
 @app.route("/store")
 def store():
+    return redirect(url_for("vegetables"))
+
+# ---------------- CATEGORIES ----------------
+@app.route("/vegetables")
+def vegetables():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    cur.execute("SELECT * FROM products")
+    cur.execute("SELECT * FROM products WHERE category = 'vegetables'")
     products = cur.fetchall()
+    cur.execute("SELECT * FROM banners")
+    banners = cur.fetchall()
     conn.close()
+    return render_template("category.html", products=products, category_name="🥬 Vegetables", client_user=session.get("client_user"), banners=banners)
 
-    return render_template("index.html", products=products, client_user=session.get("client_user"))
+@app.route("/juices")
+def juices():
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM products WHERE category = 'juices'")
+    products = cur.fetchall()
+    cur.execute("SELECT * FROM banners")
+    banners = cur.fetchall()
+    conn.close()
+    return render_template("category.html", products=products, category_name="🧃 Juices", client_user=session.get("client_user"), banners=banners)
+
+@app.route("/mobiles")
+def mobiles():
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM products WHERE category = 'mobiles'")
+    products = cur.fetchall()
+    cur.execute("SELECT * FROM banners")
+    banners = cur.fetchall()
+    conn.close()
+    return render_template("category.html", products=products, category_name="📱 Mobiles", client_user=session.get("client_user"), banners=banners)
 
 
 # ---------------- RUN ----------------
