@@ -299,7 +299,6 @@
                 <h1>🛒 AL NOOR STORE</h1>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a href="{{ url_for('store') }}" class="nav-link">🏠 All Products</a>
                 {% if client_user %}
                     <span style="color: #00ffcc; font-weight: 600; margin: auto 0;">Hi, {{ client_user }}!</span>
                     <a href="{{ url_for('client_logout') }}" class="nav-link">🚪 Logout</a>
@@ -307,7 +306,10 @@
                     <a href="{{ url_for('signup') }}" class="nav-link">📝 Sign Up</a>
                     <a href="{{ url_for('client_login') }}" class="nav-link">🔑 Login</a>
                 {% endif %}
-                <a href="{{ url_for('login') }}" class="nav-link" style="background: linear-gradient(135deg, rgba(255, 77, 77, 0.2), rgba(255, 0, 0, 0.1)); border-color: rgba(255, 77, 77, 0.35); color: #ff4d4d;">🔐 Admin</a>
+                {% if admin_user %}
+                    <a href="{{ url_for('admin') }}" class="nav-link" style="background: linear-gradient(135deg, rgba(255, 77, 77, 0.2), rgba(255, 0, 0, 0.1)); border-color: rgba(255, 77, 77, 0.35); color: #ff4d4d;">🛠️ Admin Panel</a>
+                    <a href="{{ url_for('logout') }}" class="nav-link" style="background: linear-gradient(135deg, rgba(255, 77, 77, 0.2), rgba(255, 0, 0, 0.1)); border-color: rgba(255, 77, 77, 0.35); color: #ff4d4d;">🚪 Logout</a>
+                {% endif %}
             </div>
         </div>
 
