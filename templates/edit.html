@@ -193,6 +193,16 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Category</label>
+                    <select name="category" style="width: 100%; padding: 18px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(0, 255, 204, 0.3); border-radius: 12px; color: #fff; font-size: 18px;">
+                        <option value="other" {% if product[4] == 'other' %}selected{% endif %}>Other</option>
+                        <option value="vegetables" {% if product[4] == 'vegetables' %}selected{% endif %}>🥬 Vegetables</option>
+                        <option value="juices" {% if product[4] == 'juices' %}selected{% endif %}>🧃 Juices</option>
+                        <option value="mobiles" {% if product[4] == 'mobiles' %}selected{% endif %}>📱 Mobiles</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label>Image URL (or leave empty to use file upload)</label>
                     <input type="url" name="image" value="{{ product[3] if product[3] else '' }}" placeholder="https://example.com/image.jpg">
                 </div>

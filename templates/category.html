@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AL NOOR ONLINE STORE</title>
+    <title>{{ category_name }} | AL NOOR ONLINE STORE</title>
     <style>
         * {
             margin: 0;
@@ -23,32 +23,6 @@
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
-        }
-
-        /* Intro Screen */
-        #intro {
-            position: fixed;
-            width: 100%;
-            height: 100vh;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 9999;
-        }
-
-        #intro h1 {
-            font-size: 52px;
-            color: #00ffcc;
-            animation: zoom 2s ease-in-out;
-            text-shadow: 0 0 30px rgba(0, 255, 204, 0.6);
-            letter-spacing: 3px;
-        }
-
-        @keyframes zoom {
-            from { transform: scale(0); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
         }
 
         /* Header */
@@ -103,6 +77,46 @@
             box-shadow: 0 8px 20px rgba(0, 255, 204, 0.35);
         }
 
+        /* Animated Banner */
+        .banner-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 20px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 255, 204, 0.2);
+        }
+
+        .banner-slide {
+            width: 100%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            animation: bannerAnimation 12s infinite;
+        }
+
+        .banner-slide:nth-child(1) { animation-delay: 0s; }
+        .banner-slide:nth-child(2) { animation-delay: 4s; }
+        .banner-slide:nth-child(3) { animation-delay: 8s; }
+
+        @keyframes bannerAnimation {
+            0% { opacity: 0; transform: scale(1.1); }
+            5% { opacity: 1; transform: scale(1); }
+            28% { opacity: 1; transform: scale(1); }
+            33% { opacity: 0; transform: scale(1.1); }
+            100% { opacity: 0; transform: scale(1.1); }
+        }
+
+        .banner-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
         @keyframes slideInDown {
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -149,8 +163,7 @@
         }
 
         /* Main Content */
-        #main {
-            display: none;
+        .main-content {
             padding: 50px 30px;
         }
 
@@ -260,16 +273,25 @@
             padding: 60px;
             grid-column: 1/-1;
         }
+
+        /* Swipe indicator */
+        .swipe-hint {
+            text-align: center;
+            color: rgba(0, 255, 204, 0.6);
+            margin-bottom: 20px;
+            font-size: 14px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <!-- Intro Screen -->
-    <div id="intro">
-        <h1>AL NOOR ONLINE STORE</h1>
-    </div>
-
     <!-- Main Store -->
-    <div id="main">
+    <div class="main-content">
         <!-- Header -->
         <div class="header">
             <div class="logo-section">
@@ -277,9 +299,7 @@
                 <h1>🛒 AL NOOR STORE</h1>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a href="{{ url_for('vegetables') }}" class="nav-link">🥬 Vegetables</a>
-                <a href="{{ url_for('juices') }}" class="nav-link">🧃 Juices</a>
-                <a href="{{ url_for('mobiles') }}" class="nav-link">📱 Mobiles</a>
+                <a href="{{ url_for('store') }}" class="nav-link">🏠 All Products</a>
                 {% if client_user %}
                     <span style="color: #00ffcc; font-weight: 600; margin: auto 0;">Hi, {{ client_user }}!</span>
                     <a href="{{ url_for('client_logout') }}" class="nav-link">🚪 Logout</a>
@@ -291,13 +311,28 @@
             </div>
         </div>
 
-        <div class="tabs-container">
-            <a href="{{ url_for('vegetables') }}" class="tab-btn">🥬 Vegetables</a>
-            <a href="{{ url_for('juices') }}" class="tab-btn">🧃 Juices</a>
-            <a href="{{ url_for('mobiles') }}" class="tab-btn">📱 Mobiles</a>
+        <!-- Animated Banner -->
+        <div class="banner-container">
+            <div class="banner-wrapper">
+                {% for banner in banners %}
+                <div class="banner-slide" style="background-image: {{ banner[3] }};">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; text-shadow: 0 0 20px rgba(0,0,0,0.5);">
+                        <h2 style="font-size: 42px; margin-bottom: 10px;">{{ banner[1] }}</h2>
+                        <p style="font-size: 24px;">{{ banner[2] }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
 
-        <h2 class="page-title">Our Products</h2>
+        <div class="tabs-container">
+            <a href="{{ url_for('vegetables') }}" class="tab-btn {% if 'vegetables' in category_name %}active{% endif %}">🥬 Vegetables</a>
+            <a href="{{ url_for('juices') }}" class="tab-btn {% if 'juices' in category_name %}active{% endif %}">🧃 Juices</a>
+            <a href="{{ url_for('mobiles') }}" class="tab-btn {% if 'mobiles' in category_name %}active{% endif %}">📱 Mobiles</a>
+        </div>
+
+        <p class="swipe-hint">← Swipe left or right to switch categories →</p>
+        <h2 class="page-title">{{ category_name }}</h2>
 
         <div class="products">
             {% if products %}
@@ -337,16 +372,95 @@
                 </div>
                 {% endfor %}
             {% else %}
-            <p class="no-products">No products available yet. Check back soon!</p>
+            <p class="no-products">No products in this category yet. Check back soon!</p>
             {% endif %}
         </div>
     </div>
 
     <script>
-        setTimeout(() => {
-            document.getElementById("intro").style.display = "none";
-            document.getElementById("main").style.display = "block";
-        }, 3000);
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // Define category order for swipe
+        const categories = [
+            { name: 'vegetables', url: '{{ url_for('vegetables') }}' },
+            { name: 'juices', url: '{{ url_for('juices') }}' },
+            { name: 'mobiles', url: '{{ url_for('mobiles') }}' }
+        ];
+
+        // Get current category from URL or page title
+        let currentIndex = 0;
+        const currentPath = window.location.pathname;
+        for (let i = 0; i < categories.length; i++) {
+            if (currentPath.includes(categories[i].name)) {
+                currentIndex = i;
+                break;
+            }
+        }
+
+        function handleTouchStart(event) {
+            touchStartX = event.changedTouches[0].screenX;
+        }
+
+        function handleTouchEnd(event) {
+            touchEndX = event.changedTouches[0].screenX;
+            handleSwipe();
+        }
+
+        function handleMouseDown(event) {
+            touchStartX = event.screenX;
+        }
+
+        function handleMouseUp(event) {
+            touchEndX = event.screenX;
+            handleSwipe();
+        }
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left → next category
+                    const nextIndex = (currentIndex + 1) % categories.length;
+                    window.location.href = categories[nextIndex].url;
+                } else {
+                    // Swipe right → previous category
+                    const prevIndex = (currentIndex - 1 + categories.length) % categories.length;
+                    window.location.href = categories[prevIndex].url;
+                }
+            }
+        }
+
+        // Add event listeners
+        document.addEventListener('touchstart', handleTouchStart, false);
+        document.addEventListener('touchend', handleTouchEnd, false);
+        document.addEventListener('mousedown', handleMouseDown, false);
+        document.addEventListener('mouseup', handleMouseUp, false);
+
+        // Welcome voice message
+        {% if client_user %}
+            // Check if we've already welcomed the user in this session
+            if (!sessionStorage.getItem('welcomed')) {
+                // Function to speak the welcome
+                function sayWelcome() {
+                    const welcomeMessage = `Welcome to Al Noor Online Store, {{ client_user }}`;
+                    const speech = new SpeechSynthesisUtterance(welcomeMessage);
+                    speech.lang = 'en-US';
+                    speech.rate = 1;
+                    speech.pitch = 1;
+                    window.speechSynthesis.speak(speech);
+                    sessionStorage.setItem('welcomed', 'true');
+                    // Remove the listeners so it doesn't trigger again
+                    document.removeEventListener('click', sayWelcome);
+                    document.removeEventListener('touchstart', sayWelcome);
+                }
+                // Trigger on first user interaction
+                document.addEventListener('click', sayWelcome, { once: true });
+                document.addEventListener('touchstart', sayWelcome, { once: true });
+            }
+        {% endif %}
     </script>
 </body>
 </html>

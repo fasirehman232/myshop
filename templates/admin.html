@@ -298,7 +298,12 @@
 
         <div class="add-product">
             <h2>➕ Add New Product</h2>
-            <form method="POST" action="{{ url_for('admin') }}" enctype="multipart/form-data">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button type="button" class="btn-add" style="padding: 10px 20px; font-size: 14px;" onclick="selectCategory('vegetables')">🥬 Add Vegetable</button>
+                <button type="button" class="btn-add" style="padding: 10px 20px; font-size: 14px;" onclick="selectCategory('juices')">🧃 Add Juice</button>
+                <button type="button" class="btn-add" style="padding: 10px 20px; font-size: 14px;" onclick="selectCategory('mobiles')">📱 Add Mobile</button>
+            </div>
+            <form id="addProductForm" method="POST" action="{{ url_for('admin') }}" enctype="multipart/form-data">
                 <div class="form-group">
                     <label>Product Name</label>
                     <input type="text" name="name" placeholder="e.g. Smart Watch" required>
@@ -307,6 +312,16 @@
                 <div class="form-group">
                     <label>Price (Rs.)</label>
                     <input type="text" name="price" placeholder="e.g. 799" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category" style="width: 100%; padding: 18px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(0, 255, 204, 0.3); border-radius: 12px; color: #fff; font-size: 18px;">
+                        <option value="other">Other</option>
+                        <option value="vegetables">🥬 Vegetables</option>
+                        <option value="juices">🧃 Juices</option>
+                        <option value="mobiles">📱 Mobiles</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -321,6 +336,32 @@
 
                 <button type="submit" class="btn-add">✅ Add Product</button>
             </form>
+        </div>
+
+        <div class="add-product">
+            <h2>🎨 Edit Banners</h2>
+            {% for banner in banners %}
+            <div style="margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 15px; border: 1px solid rgba(0,255,204,0.2);">
+                <h3 style="color: #00ffcc; margin-bottom: 15px;">Banner {{ banner[0] }}</h3>
+                <form method="POST" action="{{ url_for('admin') }}" style="display: flex; flex-direction: column; gap: 15px;">
+                    <input type="hidden" name="action" value="update_banner">
+                    <input type="hidden" name="banner_id" value="{{ banner[0] }}">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" name="title" value="{{ banner[1] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Text</label>
+                        <input type="text" name="text" value="{{ banner[2] }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Background (CSS gradient or image URL)</label>
+                        <input type="text" name="background" value="{{ banner[3] }}" required>
+                    </div>
+                    <button type="submit" class="btn-add">💾 Update Banner</button>
+                </form>
+            </div>
+            {% endfor %}
         </div>
 
         <div class="products-section">
@@ -340,6 +381,7 @@
                         <img src="https://picsum.photos/300/220?random={{ p[0] }}" alt="{{ p[1] }}">
                     {% endif %}
                     <h3>{{ p[1] }}</h3>
+                    <p style="color: #aaa; margin-bottom: 5px; font-size: 14px;">Category: {{ p[4] }}</p>
                     <p class="price">Rs. {{ p[2] }}</p>
                     <div style="display: flex; gap: 10px;">
                         <a href="{{ url_for('edit', id=p[0]) }}" class="btn-delete" style="background: linear-gradient(135deg, rgba(0,255,204,0.2), rgba(0,255,204,0.1); border-color: rgba(0,255,204,0.4); color: #00ffcc;">✏️ Edit Product</a>
@@ -353,5 +395,14 @@
             {% endif %}
         </div>
     </div>
+
+    <script>
+        function selectCategory(category) {
+            const selectElement = document.querySelector('select[name="category"]');
+            selectElement.value = category;
+            // Scroll to form
+            selectElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
 </body>
 </html>
