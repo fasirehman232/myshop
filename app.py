@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import time
 from flask import Flask, render_template, request, redirect, session, url_for
 import re
 from werkzeug.utils import secure_filename
@@ -10,6 +11,10 @@ app.secret_key = os.environ.get("SECRET_KEY", "alnoor_secret_key_2026")
 
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+
+# Track active admin sessions
+active_admin_sessions = dict()  # key: session_id, value: timestamp
+MAX_ADMIN_DEVICES = 5
 
 # Create uploads folder if not exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -101,8 +106,16 @@ def login():
         password = request.form["password"]
 
         if username == "admin" and password == "admin":
-            session["user"] = username
-            return redirect(url_for("admin"))
+            # Check active sessions
+            if len(active_admin_sessions) >= MAX_ADMIN_DEVICES:
+                error = f"Login limit reached! Only {MAX_ADMIN_DEVICES} devices can be logged in at once."
+            else:
+                # Generate a unique session ID
+                admin_session_id = str(uuid4())
+                session["user"] = username
+                session["admin_session_id"] = admin_session_id
+                active_admin_sessions[admin_session_id] = time.time()
+                return redirect(url_for("admin"))
         else:
             error = "Invalid username or password"
 
@@ -112,6 +125,11 @@ def login():
 # ---------------- LOGOUT ----------------
 @app.route("/logout")
 def logout():
+    # Remove from active sessions if present
+    if "admin_session_id" in session:
+        session_id = session.pop("admin_session_id", None)
+        if session_id in active_admin_sessions:
+            del active_admin_sessions[session_id]
     session.pop("user", None)
     return redirect(url_for("login"))
 
