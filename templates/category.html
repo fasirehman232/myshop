@@ -342,9 +342,8 @@
                 <div class="card">
                     <div class="card-image-container">
                         {% if p[3] %}
-                            {% if p[3]|is_local %}
-                                {% set filename = p[3].replace('/static/', '') %}
-                                <img src="{{ url_for('static', filename=filename) }}" alt="{{ p[1] }}">
+                            {% if p[3].startswith('http') %}
+                                <img src="{{ p[3] }}" alt="{{ p[1] }}">
                             {% else %}
                                 <img src="{{ p[3] }}" alt="{{ p[1] }}">
                             {% endif %}

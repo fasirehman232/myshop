@@ -210,9 +210,8 @@
                 {% if product[3] %}
                 <div class="current-image">
                     <label>Current Image:</label>
-                    {% if product[3]|is_local %}
-                        {% set filename = product[3].replace('/static/', '') %}
-                        <img src="{{ url_for('static', filename=filename) }}" alt="{{ product[1] }}">
+                    {% if product[3].startswith('http') %}
+                        <img src="{{ product[3] }}" alt="{{ product[1] }}">
                     {% else %}
                         <img src="{{ product[3] }}" alt="{{ product[1] }}">
                     {% endif %}
