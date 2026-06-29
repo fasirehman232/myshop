@@ -89,7 +89,7 @@ def google_verify():
 # ---------------- HOME ----------------
 @app.route("/", methods=["GET"])
 def home():
-    return redirect(url_for("login"))
+    return redirect(url_for("store"))
 
 
 # ---------------- LOGIN ----------------
@@ -302,7 +302,7 @@ def vegetables():
     cur.execute("SELECT * FROM banners")
     banners = cur.fetchall()
     conn.close()
-    return render_template("category.html", products=products, category_name="🥬 Vegetables", client_user=session.get("client_user"), banners=banners)
+    return render_template("category.html", products=products, category_name="🥬 Vegetables", client_user=session.get("client_user"), banners=banners, admin_user=session.get("user"))
 
 @app.route("/juices")
 def juices():
@@ -313,7 +313,7 @@ def juices():
     cur.execute("SELECT * FROM banners")
     banners = cur.fetchall()
     conn.close()
-    return render_template("category.html", products=products, category_name="🧃 Juices", client_user=session.get("client_user"), banners=banners)
+    return render_template("category.html", products=products, category_name="🧃 Juices", client_user=session.get("client_user"), banners=banners, admin_user=session.get("user"))
 
 @app.route("/mobiles")
 def mobiles():
@@ -324,7 +324,7 @@ def mobiles():
     cur.execute("SELECT * FROM banners")
     banners = cur.fetchall()
     conn.close()
-    return render_template("category.html", products=products, category_name="📱 Mobiles", client_user=session.get("client_user"), banners=banners)
+    return render_template("category.html", products=products, category_name="📱 Mobiles", client_user=session.get("client_user"), banners=banners, admin_user=session.get("user"))
 
 
 # ---------------- RUN ----------------
