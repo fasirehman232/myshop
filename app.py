@@ -89,7 +89,7 @@ def google_verify():
 
 @app.route("/")
 def home():
-    return redirect(url_for("store"))
+    return redirect(url_for("login"))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -262,11 +262,15 @@ def client_logout():
 
 @app.route("/store")
 def store():
+    if "client_user" not in session and "user" not in session:
+        return redirect(url_for("login"))
     return redirect(url_for("vegetables"))
 
 
 @app.route("/vegetables")
 def vegetables():
+    if "client_user" not in session and "user" not in session:
+        return redirect(url_for("login"))
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute("SELECT * FROM products WHERE category = 'vegetables'")
@@ -279,6 +283,8 @@ def vegetables():
 
 @app.route("/juices")
 def juices():
+    if "client_user" not in session and "user" not in session:
+        return redirect(url_for("login"))
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute("SELECT * FROM products WHERE category = 'juices'")
@@ -291,6 +297,8 @@ def juices():
 
 @app.route("/mobiles")
 def mobiles():
+    if "client_user" not in session and "user" not in session:
+        return redirect(url_for("login"))
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute("SELECT * FROM products WHERE category = 'mobiles'")
